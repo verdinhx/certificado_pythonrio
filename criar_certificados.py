@@ -9,6 +9,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus.flowables import Image
 
+
 # --- Configuração Inicial e de Caminhos ---
 
 # Obtém o diretório atual do script para resolver caminhos relativos de forma segura
@@ -21,7 +22,7 @@ PASTA_SAIDA = os.path.join(DIR_SCRIPT, 'certificados')
 IMAGEM_FUNDO = os.path.join(DIR_SCRIPT, 'Arquivos', 'fundo.png')
 
 # Caminho da planilha
-CAMINHO_PLANILHA = 'participantes0825.xlsx'
+CAMINHO_PLANILHA = 'participantes.xlsx'
 
 # Dimensões A4 Paisagem para uso consistente
 LARGURA_PAGINA, ALTURA_PAGINA = landscape(A4) 
@@ -30,8 +31,9 @@ LARGURA_PAGINA, ALTURA_PAGINA = landscape(A4)
 MARGEM = 3.5 * cm
 
 # Dados do evento (pode ser parametrizado conforme necessário)
-data = "25 de Agosto de 2025"
+data = "31 de Outubro de 2025"
 carga_horaria = "3 horas"
+
 
 # --- Estilos de Texto ---
 styles = getSampleStyleSheet()
@@ -82,11 +84,11 @@ def desenhar_fundo(canvas, doc):
         canvas.rect(0, 0, LARGURA_PAGINA, ALTURA_PAGINA, fill=1, stroke=0)
 
 
-def gerar_certificado_unitario(nome_participante):
+def gerar_certificado_unitario(row):
     """Cria e salva um único PDF para o participante na pasta de saída."""
 
     # 1. Define o nome único do arquivo de saída
-    nome_arquivo_seguro = f"{nome_participante.replace(' ', '_').replace('.', '').replace(',', '')}_certificado.pdf"
+    nome_arquivo_seguro = f"{row['nome'].replace(' ', '_').replace('.', '').replace(',', '')}_{row['evento'].replace(' ', '_').replace('.', '').replace(',', '')}_certificado.pdf"
     caminho_saida_pdf = os.path.join(PASTA_SAIDA, nome_arquivo_seguro)
     
     # 2. Configura o SimpleDocTemplate com as margens
@@ -111,19 +113,27 @@ def gerar_certificado_unitario(nome_participante):
     story.append(Spacer(3, 2 * cm))
 
     # Corpo do certificado
-    story.append(Paragraph(f"Certificamos que {nome_participante} participou do Meet Up da Comunidade PythOnRio, com carga horária de {carga_horaria}, realizado em {data}", styles['CertificadoCorpo']))
+    story.append(Paragraph(f"{row['nome']}", styles['CertificadoCorpo'] ))
+    story.append(Spacer(1, 0.5 * cm))
+
+    # Corpo do certificado
+    story.append(Paragraph(f"Participou {row['evento']}, com carga horária de {row['hora']}, realizado em {data}", styles['CertificadoCorpo']))
+    story.append(Spacer(1, 0.5 * cm))
+
+    # Corpo do certificado
+    story.append(Paragraph(f"Realizado em {row['data']} no local {row['local']}", styles['CertificadoCorpo']))
     story.append(Spacer(1, 0.5 * cm))
 
     # Rodapé
-    story.append(Spacer(1, 0.5 * cm)) # Espaçamento antes do rodapé
-    story.append(Paragraph("PythOnRio - Comunidade de Python do Rio de Janeiro", styles['CertificadoRodape']))
+    story.append(Spacer(0, 0.5 * cm)) # Espaçamento antes do rodapé
+    story.append(Paragraph("Python Brasil 2025", styles['CertificadoRodape']))
     
     
     # 4. Constrói o PDF
     # onFirstPage: desenha a imagem de fundo antes do conteúdo do Story
     doc.build(story, onFirstPage=desenhar_fundo, onLaterPages=desenhar_fundo)
     
-    print(f"Certificado gerado com sucesso para: {nome_participante.strip()}")
+    print(f"Certificado gerado com sucesso para: {nome_arquivo_seguro.strip()}")
 
 
 def gerar_certificado_massa():
@@ -139,23 +149,24 @@ def gerar_certificado_massa():
         df = pd.read_excel(CAMINHO_PLANILHA)
 
         # 3. Validação da coluna
-        COLUNA_NOME = 'Nome completo:'
+        COLUNA_NOME = 'nome'
         if COLUNA_NOME not in df.columns:
             print(f"ERRO: A coluna '{COLUNA_NOME}' não foi encontrada na planilha. Verifique o nome da coluna.")
             print(f"Colunas disponíveis: {df.columns.tolist()}")
             return
 
         # 4. Iteração e Geração
-        nomes_para_certificar = df[COLUNA_NOME].astype(str).dropna().unique()
+        nomes_para_certificar = df[COLUNA_NOME].astype(str).dropna()
+
 
         if len(nomes_para_certificar) == 0:
             print("ATENÇÃO: Nenhuma linha válida foi encontrada na coluna de nomes para gerar certificados.")
             return
 
-        for nome_participante in nomes_para_certificar:
-            gerar_certificado_unitario(nome_participante)
+        for _, row in df.iterrows():
+            gerar_certificado_unitario(row)
         
-        print(f"\n 🐍✨ Processo concluído! Total de {len(nomes_para_certificar)} certificados gerados ✨🐍") 
+        print(f"\nProcesso concluído! Total de {len(nomes_para_certificar)} certificados gerados na pasta '{PASTA_SAIDA}'.") 
         
     except FileNotFoundError:
         print(f"ERRO: O arquivo '{CAMINHO_PLANILHA}' não foi encontrado. Verifique o caminho.")
@@ -164,4 +175,6 @@ def gerar_certificado_massa():
             
 
 
-
+# Execução do código
+if __name__ == "__main__":
+    gerar_certificado_massa()
