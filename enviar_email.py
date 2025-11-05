@@ -11,8 +11,8 @@ import re # Usado para limpeza de nome de arquivo
 
 # ATENÇÃO: Verifique se este e-mail e a senha de app estão corretos.
 # A senha de app é gerada nas configurações de segurança da sua conta Google.
-EMAIL_REMETENTE = 'noreply@python.org.br'  #MUDAR AQUI
-SENHA_APP = 'pdgu nnot hyjd hhsy'  #MUDAR AQUI
+EMAIL_REMETENTE =  #MUDAR AQUI
+SENHA_APP =  #MUDAR AQUI
 
 
 SMTP_SERVIDOR = 'smtp.gmail.com'
