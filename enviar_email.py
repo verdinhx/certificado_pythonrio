@@ -127,7 +127,7 @@ def enviar_certificados_em_massa():
             # Finalmente, envia o e-mail
             enviar_email(email_destinatario, nome_destinatario, pdf_filename)
             
-        print("\nProcesso de envio de e-mails concluído.")
+        print("\n 🐍✨ Processo de envio de e-mails concluído  🐍✨ ")
 
     except FileNotFoundError:
         print(f"ERRO: O arquivo '{CAMINHO_PLANILHA}' não foi encontrado. Verifique o caminho.")
