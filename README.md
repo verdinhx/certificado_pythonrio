@@ -11,7 +11,7 @@
 
 ## Descrição
 
-Esse repositório contém os arquivos necessários para gerar os certificados dos encontros da comunidade PythOnRio.
+Esse repositório contém os arquivos necessários para gerar os certificados ([exemplo de certificado gerado](certificados/Nome_de_exemplo_1_certificado.pdf)) dos encontros da comunidade PythOnRio.
 
 ## Uso
 Baixe os arquivos deste repositório. No seu compilador, rode apenas o `main.py`. No terminal aparecerá alguns inputs necessários para as configurações iniciais do evento. O primeiro passo é selecionar se você quer gerar um certificado para tutorial ou meetup.
@@ -51,7 +51,8 @@ Se "sim" for selecionado, espere enviar os emais até o aviso de conclusão:
 ```
 
 ### Sobre os arquivos
-* [**Arquivos/**](Arquivos) - Nesta pasta você irá encontrar o arquivo de imagem [**fundo.png**](Arquivos/fundo.png) que será o fundo do certificado. 
+* [**Arquivos/**](Arquivos) - Nesta pasta você irá encontrar o arquivo de imagem [**fundo.png**](Arquivos/fundo.png) que será o fundo do certificado.
+* [**certificados/**](certificados) - Nesta pasta você irá encontrar os certificados gerados. Ela pode ser apagada, pois quando o script for compilado, ele criará a pasta, se ela não existir. 
 * [**criar_certificados.py**](criar_certificados.py) - Nesse script será onde os certificados serão gerados. Todo o layout é construído aqui. Título, corpo do texto e outras informações são adicionadas aqui. 
 * [**dados.py**](dados.py) - Esse script faz a entrada de dados do evento atrávés de inputs.
 * [**enviar_email.py**](enviar_email.py) - Esse script faz a configuração de email e os envios do certificado. É possível adicionar um email para enviar cópias (CC). 
